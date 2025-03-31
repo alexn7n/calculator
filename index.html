@@ -17,17 +17,21 @@
     <button class="number-button">7</button>
     <button class="number-button">8</button>
     <button class="number-button">9</button>
+    <button class="number-button">.</button>
     </div>      
-    <button class="calculate-button">+</button>
-    <button class="calculate-button">-</button>
-    <button class="calculate-button">/</button>
-    <button class="calculate-button">x</button>
+    <button class="operate-button">+</button>
+    <button class="operate-button">-</button>
+    <button class="operate-button">/</button>
+    <button class="operate-button">x</button>
 
     <button id="equals-button">=</button>
     <div>
     <button id="clear-button">clear</button>
     </div>
-    <p id="display"></p>
+    <div class="result">
+        prev<p id="previous-operand"></p>
+        current<p id="current-operand"></p>
+    </div>
 
 <script src="events.js"></script>    
 </body>
