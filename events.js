@@ -4,14 +4,15 @@ const numberButtonElements = document.querySelectorAll(".number-button");
 const operatorButtonElements = document.querySelectorAll(".operate-button");
 const equalsButtonElement = document.querySelector("#equals-button");
 const clearButtonElement = document.querySelector("#clear-button");
+const removeButtonElement = document.querySelector("#remove-button");
 const previousOperandElement = document.querySelector("#previous-operand");
 const currentOperandElement = document.querySelector("#current-operand");
 
 // Values object
 
 const values = {
-  currentOperand: currentOperandElement,
-  previousOperand: previousOperandElement,
+  currentOperand: "",
+  previousOperand: "",
   operation: undefined,
 };
 
@@ -30,52 +31,66 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
-  return a / b;
+  return b === 0 ? "Error" : a / b;
 }
 
 // Calculator functions
 
 function clear() {
-  currentOperandElement.textContent = "";
-  previousOperandElement.textContent = "";
+  values.currentOperand = "";
+  values.previousOperand = "";
   values.operation = undefined;
 }
 
 function remove() {
+  values.currentOperand = values.currentOperand.toString().slice(0, -1)
 
 }
 
 function appendNumber(number) {
-if (number === "." && values.currentOperand.textContent.includes(".")) return
-  values.currentOperand.textContent += number;
+if (number === "." && values.currentOperand.includes(".")) return
+  values.currentOperand += number;
 }
 
 function chooseOperation(op) {
-  if (values.currentOperand.textContent === "") return
-  if (values.previousOperand.textContent !== "") {
-    compute(values.previousOperand.textContent, values.currentOperand.textContent, values.operation);
+  if (values.currentOperand === "") return
+  if (values.previousOperand !== "") {
+  compute();
   }
   values.operation = op;
-  values.previousOperand.textContent = values.currentOperand.textContent;
-  values.currentOperand.textContent = "";
+  values.previousOperand = values.currentOperand;
+  values.currentOperand = "";
 }
 
-function compute(numberA, numberB, operator) {
+function compute() {
   let result;
-  switch (operator) {
-      case "/": return divide(numberA, numberB);
-      case "*": return multiply(numberA, numberB);
-      case "-": return subtract(numberA, numberB);
-      case "+": return add(numberA, numberB);
+  const x = parseFloat(values.previousOperand);
+  const y = parseFloat(values.currentOperand);
+  if (isNaN(x) || isNaN(y)) return
+  switch (values.operation) {
+      case "/": result = divide(x, y);
+      break;
+      case "x": result = multiply(x, y);
+      break;
+      case "-": result = subtract(x, y);
+      break;
+      case "+": result = add(x, y);
+      break;
       default: result = "Error";
   }
-values.currentOperand.textContent = result;
-values.previousOperand.textContent = "";
+values.currentOperand = result;
 values.operation = undefined;
+values.previousOperand = "";
 }
 
 function updateDisplay() {
-  currentOperandElement.textContent = values.currentOperand.textContent;  
+  currentOperandElement.textContent = values.currentOperand; 
+  if (values.operation !== undefined) {
+    previousOperandElement.textContent = 
+    `${values.previousOperand} ${values.operation}`
+  } else {
+    previousOperandElement.textContent = "";
+  }
 }
 
 // Click events
@@ -95,10 +110,16 @@ operatorButtonElements.forEach((button) => {
 });
 
 equalsButtonElement.addEventListener ('click', button => {
-  compute(values.currentOperand.textContent, values.previousOperand.textContent, values.operation)
+  compute();
   updateDisplay();
 })
 
-clearButtonElement.addEventListener ('click', () => {
-  clear()
+clearButtonElement.addEventListener ('click', button => {
+  clear();
+  updateDisplay();
+})
+
+removeButtonElement.addEventListener ('click', button => {
+  remove();
+  updateDisplay();
 })
